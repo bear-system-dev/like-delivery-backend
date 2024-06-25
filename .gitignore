@@ -1,3 +1,6 @@
+# dev enviroment
+/dbdata
+
 # compiled output
 /dist
 /node_modules
