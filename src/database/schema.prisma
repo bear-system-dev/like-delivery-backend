@@ -11,7 +11,7 @@ model User {
   id           String        @id @default(uuid())
   email        String        @unique
   fantasy      String
-  adress       String
+  address      String
   phones       Int
   password     String
   clients      Client[]
@@ -32,33 +32,33 @@ model UserPersonal {
 
 model UserCompany {
   id     String @id @default(uuid())
-  userId String @unique
   CNPJ   String @unique
   user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model Client {
   id       String @id @default(uuid())
-  clientId String @unique
   name     String
   email    String @unique
   adress   String
   phones   Int
   password String
-  user     User   @relation(fields: [clientId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
 }
 
 model Product {
-  id        String @id @default(uuid())
-  productId String @unique
-  name      String
-  price     Float
-  user      User   @relation(fields: [productId], references: [id])
+  id     String @id @default(uuid())
+  name   String
+  price  Float
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Order {
-  id      String @id @default(uuid())
-  orderId String @unique
-  name    String
-  user    User   @relation(fields: [orderId], references: [id])
+  id     String @id @default(uuid())
+  name   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
