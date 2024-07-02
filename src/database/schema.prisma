@@ -22,7 +22,7 @@ model User {
   products    Product[]
   orders      Order[]
 
-  @@index([email, fantasyName])
+  @@index([email, fantasyName, CPF, CNPJ])
   @@map("users")
 }
 
