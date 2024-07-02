@@ -31,6 +31,29 @@ export class UsersService {
     }
   }
 
+  async findAllByEmail(queries: PaginateUserQueries): Promise<Error | User[]> {
+    try {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          email: {
+            contains: queries.filter,
+          },
+        },
+        orderBy: {
+          fantasyName: queries.orderDirection,
+        },
+        take: queries.limit,
+        skip: (queries.page - 1) * queries.limit,
+        include: userDataIncludes,
+      });
+      return users;
+    } catch (error) {
+      const msg = `Um erro ocorreu o buscar registro`;
+      this.logger.error(msg, error);
+      return new Error(msg);
+    }
+  }
+
   async findAllByName(queries: PaginateUserQueries): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
@@ -79,13 +102,37 @@ export class UsersService {
     }
   }
 
-  async findAllUnique(
-    queries: PaginateUserQueries,
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<Error | User[]> {
+  async findAllByCPF(queries: PaginateUserQueries): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
-        where: userWhereUniqueInput, // Tem que verificar se na chamada ele permite utiliza o contains: queries.filter. Senão vai ter que mudar
+        where: {
+          CPF: {
+            contains: queries.filter,
+          },
+        },
+        orderBy: {
+          fantasyName: queries.orderDirection,
+        },
+        take: queries.limit,
+        skip: (queries.page - 1) * queries.limit,
+        include: userDataIncludes,
+      });
+      return users;
+    } catch (error) {
+      const msg = `Um erro ocorreu o buscar registro`;
+      this.logger.error(msg, error);
+      return new Error(msg);
+    }
+  }
+
+  async findAllByCNPJ(queries: PaginateUserQueries): Promise<Error | User[]> {
+    try {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          CNPJ: {
+            contains: queries.filter,
+          },
+        },
         orderBy: {
           fantasyName: queries.orderDirection,
         },
