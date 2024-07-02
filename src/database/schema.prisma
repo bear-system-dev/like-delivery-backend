@@ -16,7 +16,7 @@ model User {
   address     String
   CPF         String?       @unique
   CNPJ        String?       @unique
-  active      Boolean
+  active      Boolean?       @default(false)
   phones      PhoneNumber[]
   clients     Client[]
   products    Product[]
