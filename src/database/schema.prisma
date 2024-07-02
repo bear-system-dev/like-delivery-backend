@@ -16,50 +16,66 @@ model User {
   address     String
   CPF         String?       @unique
   CNPJ        String?       @unique
-  active      Boolean?       @default(false)
+  active      Boolean?      @default(false)
   phones      PhoneNumber[]
   clients     Client[]
   products    Product[]
   orders      Order[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([email, fantasyName, CPF, CNPJ])
   @@map("users")
 }
 
 model PhoneNumber {
-  id          String @id @default(uuid())
-  countryCode String @default("55")
+  id          String   @id @default(uuid())
+  countryCode String   @default("55")
   areaCode    String
   phoneNumber String
-  user        User   @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
   userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([areaCode, phoneNumber])
   @@map("phone_numbers")
 }
 
 model Client {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  adress   String
-  phones   Int
-  password String
-  user     User   @relation(fields: [userId], references: [id])
-  userId   String
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  adress    String
+  phones    Int
+  password  String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("clients")
 }
 
 model Product {
-  id     String @id @default(uuid())
-  name   String
-  price  Float
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id        String   @id @default(uuid())
+  name      String
+  price     Float
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
 }
 
 model Order {
-  id     String @id @default(uuid())
-  name   String
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id        String   @id @default(uuid())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
 }
