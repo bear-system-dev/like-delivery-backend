@@ -17,4 +17,17 @@ export class PaginateUserQueries {
     example: 'desc',
   })
   orderDirection?: 'asc' | 'desc';
+
+  @ApiProperty({
+    description: 'O tipo de dado o qual você quer pesquisar',
+    enum: {
+      cpf: 'cpf',
+      cnpj: 'cnpj',
+      email: 'email',
+      fantasy_name: 'fantasy_name',
+      name: 'name',
+    },
+    examples: ['cpf', 'email', 'fantasy_name'],
+  })
+  searchFor?: 'cpf' | 'cnpj' | 'email' | 'fantasy_name' | 'name';
 }

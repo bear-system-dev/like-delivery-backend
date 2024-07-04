@@ -31,7 +31,56 @@ export class UsersService {
     }
   }
 
-  async findAllByEmail(queries: PaginateUserQueries): Promise<Error | User[]> {
+  async findAllBy(queries: PaginateUserQueries): Promise<User[] | Error> {
+    const { filter, limit, orderDirection, page, searchFor } = queries;
+    switch (searchFor) {
+      case 'cpf':
+        const usersCPF: User[] | Error = await this.findAllByCPF({
+          filter: filter || '',
+          limit: limit || 7,
+          page: page || 1,
+          orderDirection: orderDirection || 'asc',
+        });
+        return usersCPF;
+      case 'cnpj':
+        const usersCNPJ: User[] | Error = await this.findAllByCNPJ({
+          filter: filter || '',
+          limit: limit || 7,
+          page: page || 1,
+          orderDirection: orderDirection || 'asc',
+        });
+        return usersCNPJ;
+      case 'fantasy_name':
+        const usersFantasyName: User[] | Error =
+          await this.findAllByFantasyName({
+            filter: filter || '',
+            limit: limit || 7,
+            page: page || 1,
+            orderDirection: orderDirection || 'asc',
+          });
+        return usersFantasyName;
+      case 'name':
+        const usersName: User[] | Error = await this.findAllByName({
+          filter: filter || '',
+          limit: limit || 7,
+          page: page || 1,
+          orderDirection: orderDirection || 'asc',
+        });
+        return usersName;
+      default:
+        const usersEmail: User[] | Error = await this.findAllByEmail({
+          filter: filter || '',
+          limit: limit || 7,
+          page: page || 1,
+          orderDirection: orderDirection || 'asc',
+        });
+        return usersEmail;
+    }
+  }
+
+  private async findAllByEmail(
+    queries: PaginateUserQueries,
+  ): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: {
@@ -40,7 +89,7 @@ export class UsersService {
           },
         },
         orderBy: {
-          fantasyName: queries.orderDirection,
+          email: queries.orderDirection,
         },
         take: queries.limit,
         skip: (queries.page - 1) * queries.limit,
@@ -54,7 +103,9 @@ export class UsersService {
     }
   }
 
-  async findAllByName(queries: PaginateUserQueries): Promise<Error | User[]> {
+  private async findAllByName(
+    queries: PaginateUserQueries,
+  ): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: {
@@ -77,7 +128,7 @@ export class UsersService {
     }
   }
 
-  async findAllByFantasyName(
+  private async findAllByFantasyName(
     queries: PaginateUserQueries,
   ): Promise<Error | User[]> {
     try {
@@ -102,7 +153,9 @@ export class UsersService {
     }
   }
 
-  async findAllByCPF(queries: PaginateUserQueries): Promise<Error | User[]> {
+  private async findAllByCPF(
+    queries: PaginateUserQueries,
+  ): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: {
@@ -111,7 +164,7 @@ export class UsersService {
           },
         },
         orderBy: {
-          fantasyName: queries.orderDirection,
+          CPF: queries.orderDirection,
         },
         take: queries.limit,
         skip: (queries.page - 1) * queries.limit,
@@ -125,7 +178,9 @@ export class UsersService {
     }
   }
 
-  async findAllByCNPJ(queries: PaginateUserQueries): Promise<Error | User[]> {
+  private async findAllByCNPJ(
+    queries: PaginateUserQueries,
+  ): Promise<Error | User[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: {
@@ -134,7 +189,7 @@ export class UsersService {
           },
         },
         orderBy: {
-          fantasyName: queries.orderDirection,
+          CNPJ: queries.orderDirection,
         },
         take: queries.limit,
         skip: (queries.page - 1) * queries.limit,
@@ -209,7 +264,7 @@ export class UsersService {
       });
       return deactivatedUser;
     } catch (error) {
-      const msg = `Um erro ocorreu o desativar registro`;
+      const msg = `Um erro ocorreu ao desativar registro`;
       this.logger.error(msg, error);
       return new Error(msg);
     }
@@ -226,7 +281,7 @@ export class UsersService {
       });
       return activatedUser;
     } catch (error) {
-      const msg = `Um erro ocorreu o ativar registro`;
+      const msg = `Um erro ocorreu ao ativar registro`;
       this.logger.error(msg, error);
       return new Error(msg);
     }
