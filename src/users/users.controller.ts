@@ -25,10 +25,9 @@ export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
   @Get()
-  async findAll(@Query() queries: PaginateUserQueries, @Res() res: Response) {
+  async findAllBy(@Query() queries: PaginateUserQueries, @Res() res: Response) {
     const errors: Array<string> = [];
     const { filter, limit, orderDirection, page, searchFor } = queries;
-
     const users = await this.usersService.findAllBy({
       filter,
       limit,
@@ -38,13 +37,14 @@ export class UsersController {
     });
     if (users instanceof Error) {
       errors.push(users.message);
+    } else if (!users || users.length < 1) {
+      errors.push('Nenhum registro encontrado com essas informações');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registros encontrados com sucesso',
         users,
       });
     }
-
     return await this.serverResponses.internalServerError(res, {
       message: 'Erro ao buscar registros',
       errors,
@@ -57,6 +57,8 @@ export class UsersController {
     const user = await this.usersService.findUnique({ id });
     if (user instanceof Error) {
       errors.push(user.message);
+    } else if (!user) {
+      errors.push('Nenhum registro encontrado para esse ID');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registro encontrado com sucesso',
@@ -76,16 +78,17 @@ export class UsersController {
     @Res() res: Response,
   ) {
     const errors: Array<string> = [];
-    const updatedUser = await this.usersService.updateUnique(
-      { id },
-      updateUserDto,
-    );
-    if (updatedUser instanceof Error) {
-      errors.push(updatedUser.message);
+    const user = await this.usersService.updateUnique({ id }, updateUserDto);
+    if (user instanceof Error) {
+      errors.push(user.message);
+    } else if (!user) {
+      errors.push('Nenhum registro encontrado para esse ID');
+    } else if (!updateUserDto) {
+      errors.push('Nenhum dado recebido. Envie os dados no body');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registro encontrado com sucesso',
-        updatedUser,
+        user,
       });
     }
     return await this.serverResponses.internalServerError(res, {
@@ -100,6 +103,8 @@ export class UsersController {
     const user = await this.usersService.deleteUnique({ id });
     if (user instanceof Error) {
       errors.push(user.message);
+    } else if (!user) {
+      errors.push('Nenhum registro encontrado para esse ID');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registro encontrado com sucesso',
@@ -107,17 +112,19 @@ export class UsersController {
       });
     }
     return await this.serverResponses.internalServerError(res, {
-      message: 'Erro ao buscar registro',
+      message: 'Erro ao remover registro',
       errors,
     });
   }
 
-  @Post(':id')
+  @Post(':id/deactivate-user')
   async deactivateById(@Param('id') id: string, @Res() res: Response) {
     const errors: Array<string> = [];
     const user = await this.usersService.deactivateUnique({ id });
     if (user instanceof Error) {
       errors.push(user.message);
+    } else if (!user) {
+      errors.push('Nenhum registro encontrado para esse ID');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registro desativado com sucesso',
@@ -130,12 +137,14 @@ export class UsersController {
     });
   }
 
-  @Post(':id')
+  @Post(':id/activate-user')
   async activateById(@Param('id') id: string, @Res() res: Response) {
     const errors: Array<string> = [];
     const user = await this.usersService.activateUnique({ id });
     if (user instanceof Error) {
       errors.push(user.message);
+    } else if (!user) {
+      errors.push('Nenhum registro encontrado para esse ID');
     } else {
       return await this.serverResponses.ok(res, {
         message: 'Registro ativado com sucesso',
