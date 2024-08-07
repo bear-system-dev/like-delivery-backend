@@ -17,7 +17,7 @@ model User {
   CPF         String?       @unique
   CNPJ        String?       @unique
   active      Boolean?      @default(false)
-  phones      PhoneNumber[]
+  phones      String[]
   clients     Client[]
   products    Product[]
   orders      Order[]
@@ -33,8 +33,8 @@ model PhoneNumber {
   countryCode String   @default("55")
   areaCode    String
   phoneNumber String
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  // user        User     @relation(fields: [userId], references: [id])
+  // userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

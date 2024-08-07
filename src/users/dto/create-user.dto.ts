@@ -30,7 +30,7 @@ export class CreateUserDto {
   active?: boolean;
 
   @ApiProperty({ required: false })
-  phones: Prisma.PhoneNumberCreateNestedManyWithoutUserInput;
+  phones: Array<string>;
 
   @ApiProperty({ required: false })
   clients: Prisma.ClientCreateNestedManyWithoutUserInput;

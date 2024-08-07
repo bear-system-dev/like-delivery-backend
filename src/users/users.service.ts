@@ -8,7 +8,7 @@ import { PaginateUserQueries } from './dto/paginate-user-queries-dto';
 const userDataIncludes = {
   clients: true,
   orders: true,
-  phones: true,
+  // phones: true,
   products: true,
   _count: true,
 };
@@ -25,7 +25,7 @@ export class UsersService {
       });
       return newUser;
     } catch (error) {
-      const msg = `Um erro ocorreu o criar registro`;
+      const msg = `Um erro ocorreu ao criar registro`;
       this.logger.error(msg, error);
       return new Error(msg);
     }

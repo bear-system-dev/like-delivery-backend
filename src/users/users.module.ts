@@ -8,5 +8,6 @@ import { ServerResponsesModule } from 'src/server-responses/server-responses.mod
   imports: [DatabaseMdodule, ServerResponsesModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
