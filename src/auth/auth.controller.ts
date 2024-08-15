@@ -75,10 +75,14 @@ export class AuthController {
     const hashedPassword = await this.bearHashing.hashData(
       createUserDto.password,
     );
-    if (hashedPassword instanceof Error) errors.push(hashedPassword.message);
+    if (hashedPassword instanceof Error)
+      return errors.push(hashedPassword.message);
 
     if (errors.length === 0) {
-      const newUser = await this.usersService.create(createUserDto);
+      const newUser = await this.usersService.create({
+        ...createUserDto,
+        password: hashedPassword ?? originalPassword,
+      });
       if (newUser instanceof Error) {
         errors.push(newUser.message);
         return this.serverResponses.internalServerError(res, {
