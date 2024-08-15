@@ -5,10 +5,10 @@ import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 import { PaginateUserQueries } from './dto/paginate-user-queries-dto';
 
-const userDataIncludes = {
+const userDataIncludes: Prisma.UserInclude = {
+  address: true,
   clients: true,
   orders: true,
-  // phones: true,
   products: true,
   _count: true,
 };
@@ -18,9 +18,23 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
   private readonly logger = new Logger(UsersService.name);
   async create(createUserDto: CreateUserDto): Promise<Error | User> {
+    const { city, complement, country, neighborhood, number, street } =
+      createUserDto.address;
     try {
       const newUser = await this.prismaService.user.create({
-        data: createUserDto,
+        data: {
+          ...createUserDto,
+          address: {
+            create: {
+              city,
+              complement,
+              country,
+              neighborhood,
+              number,
+              street,
+            },
+          },
+        },
         include: userDataIncludes,
       });
       return newUser;
@@ -223,10 +237,24 @@ export class UsersService {
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     updateUserDto: UpdateUserDto,
   ): Promise<Error | User> {
+    const { city, complement, country, neighborhood, number, street } =
+      updateUserDto.address;
     try {
       const updateUser = await this.prismaService.user.update({
         where: userWhereUniqueInput,
-        data: updateUserDto,
+        data: {
+          ...updateUserDto,
+          address: {
+            create: {
+              city,
+              complement,
+              country,
+              neighborhood,
+              number,
+              street,
+            },
+          },
+        },
         include: userDataIncludes,
       });
       return updateUser;

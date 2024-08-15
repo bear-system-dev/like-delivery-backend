@@ -8,38 +8,38 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(uuid())
-  email       String        @unique
-  password    String
-  name        String?
-  fantasyName String?
-  address     String
-  CPF         String?       @unique
-  CNPJ        String?       @unique
-  active      Boolean?      @default(false)
-  phones      String[]
-  clients     Client[]
-  products    Product[]
-  orders      Order[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String
+  address           Address   @relation(fields: [addressId], references: [id])
+  name              String?
+  fantasyName       String?
+  CPF               String?   @unique
+  CNPJ              String?   @unique
+  active            Boolean?  @default(false)
+  phoneNumberFirst  String
+  phoneNumberSecond String?
+  phoneNumberThird  String?
+  clients           Client[]
+  products          Product[]
+  orders            Order[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  addressId         String
 
   @@index([email, fantasyName, CPF, CNPJ])
   @@map("users")
 }
 
-model PhoneNumber {
-  id          String   @id @default(uuid())
-  countryCode String   @default("55")
-  areaCode    String
-  phoneNumber String
-  // user        User     @relation(fields: [userId], references: [id])
-  // userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([areaCode, phoneNumber])
-  @@map("phone_numbers")
+model Address {
+  id           String  @id @default(uuid())
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  country      String
+  complement   String?
+  User         User[]
 }
 
 model Client {
