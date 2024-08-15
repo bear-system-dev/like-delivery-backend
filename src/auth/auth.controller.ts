@@ -17,7 +17,7 @@ export class AuthController {
     private readonly bearHashing: BearHashingService,
   ) {}
   @Public()
-  @Post('sign-in')
+  @Post('sign-up')
   async cadastrar(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const errors: Array<string> = [];
     const userAddressDTO: UserAddressDTO = {
