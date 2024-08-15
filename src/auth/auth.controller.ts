@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { BearHashingService } from 'src/bear-hashing/bear-hashing.service';
 import { Public } from 'src/decorators/public-endpoint.decorator';
 import { UserAddressDTO } from 'src/users/dto/user-address.dto';
+import { UserEntrarDTO } from './dto/user-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -81,6 +82,7 @@ export class AuthController {
     if (errors.length === 0) {
       const newUser = await this.usersService.create({
         ...createUserDto,
+        email: createUserDto.email.toLowerCase(),
         password: hashedPassword ?? originalPassword,
       });
       if (newUser instanceof Error) {
@@ -96,10 +98,58 @@ export class AuthController {
       });
     }
 
-    // Redundância
     return this.serverResponses.internalServerError(res, {
       mensagem: 'Erro grave ao criar usuário',
       errors,
+    });
+  }
+
+  @Public()
+  @Post('log-in')
+  async entrar(@Body() userEntrarDTO: UserEntrarDTO, @Res() res: Response) {
+    const { email, password } = userEntrarDTO;
+    if (
+      !email ||
+      email === '' ||
+      email.length <= 0 ||
+      !password ||
+      password === '' ||
+      password.length <= 0
+    ) {
+      return this.serverResponses.badRequest(res, {
+        message: 'Você deve fornecer email e password',
+      });
+    }
+    const verEmail = await this.usersService.findUnique({
+      email: email.toLowerCase(),
+    });
+    if (verEmail instanceof Error)
+      return this.serverResponses.internalServerError(res, {
+        message: verEmail.message,
+        errorStack: verEmail.stack,
+        status: 500,
+      });
+    if (!verEmail)
+      return this.serverResponses.badRequest(res, {
+        message: 'E-mail informado incorreto, verifique e tente novamente',
+        email,
+      });
+
+    const access_data = await this.authService.logIn(verEmail.id, password, {
+      email: email.toLowerCase(),
+      password: verEmail.password,
+      userName: verEmail.name ?? verEmail.fantasyName,
+    });
+
+    if (access_data instanceof Error) {
+      return this.serverResponses.internalServerError(res, {
+        message: access_data.message,
+      });
+    }
+
+    return this.serverResponses.ok(res, {
+      message: 'Usuário entrou com sucesso',
+      access_data,
     });
   }
 }

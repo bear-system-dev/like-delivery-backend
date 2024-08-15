@@ -16,8 +16,8 @@ import { BearHashingModule } from 'src/bear-hashing/bear-hashing.module';
     BearHashingModule,
     JwtModule.register({
       global: true,
-      secret: 'asdwdadwdw',
-      signOptions: { expiresIn: '60s' },
+      secret: process.env.SECRET_KEY ?? '',
+      signOptions: { expiresIn: '300s' },
     }),
   ],
   controllers: [AuthController],
