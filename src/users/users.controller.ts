@@ -107,7 +107,7 @@ export class UsersController {
       errors.push('Nenhum registro encontrado para esse ID');
     } else {
       return await this.serverResponses.ok(res, {
-        message: 'Registro encontrado com sucesso',
+        message: 'Registro removido com sucesso',
         user,
       });
     }

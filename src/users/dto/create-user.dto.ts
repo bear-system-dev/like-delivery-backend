@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 import { UserAddressDTO } from './user-address.dto';
 
 export class CreateUserDto {
@@ -38,13 +37,4 @@ export class CreateUserDto {
 
   @ApiProperty({ required: true })
   phoneNumberThird?: string;
-
-  @ApiProperty({ required: false })
-  clients: Prisma.ClientCreateNestedManyWithoutUserInput;
-
-  @ApiProperty({ required: false })
-  products: Prisma.ProductCreateNestedManyWithoutUserInput;
-
-  @ApiProperty({ required: false })
-  orders: Prisma.OrderCreateNestedManyWithoutUserInput;
 }
