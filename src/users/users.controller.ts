@@ -15,7 +15,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import { ServerResponsesService } from 'src/server-responses/server-responses.service';
 import { PaginateUserQueries } from './dto/paginate-user-queries-dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(

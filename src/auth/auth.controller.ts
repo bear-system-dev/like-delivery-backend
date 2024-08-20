@@ -8,7 +8,9 @@ import { BearHashingService } from 'src/bear-hashing/bear-hashing.service';
 import { Public } from 'src/decorators/public-endpoint.decorator';
 import { UserAddressDTO } from 'src/users/dto/user-address.dto';
 import { UserEntrarDTO } from './dto/user-login.dto';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -17,6 +19,33 @@ export class AuthController {
     private readonly serverResponses: ServerResponsesService,
     private readonly bearHashing: BearHashingService,
   ) {}
+  @ApiResponse({
+    description: 'Retorna os dados do usuário criados do usuário',
+    schema: {
+      default: {
+        message: 'Usuário criado com sucesso',
+        newUser: {},
+      },
+    },
+    status: 201,
+  })
+  @ApiResponse({
+    description:
+      'Erro no banco de dados no item-1, ou erros de validação no item-2. (Um por vez)',
+    schema: {
+      default: [
+        {
+          mensagem: 'Erro ao gravar dados do usuário no banco de dados',
+          errors: ['erro1', 'erro2', '...'],
+        },
+        {
+          mensagem: 'Erro grave ao criar usuário',
+          errors: ['erro1', 'erro2', '...'],
+        },
+      ],
+    },
+    status: 500,
+  })
   @Public()
   @Post('sign-up')
   async cadastrar(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
@@ -104,6 +133,48 @@ export class AuthController {
     });
   }
 
+  @ApiResponse({
+    description:
+      'Retorna os dados para acesso ao sistema se feito login corretamente',
+    schema: {
+      default: {
+        message: 'Usuário entrou com sucesso',
+        access_data: {},
+      },
+    },
+    status: 200,
+  })
+  @ApiResponse({
+    description:
+      'Erro se não fornecer o e-mail ou senha no item-1, ou se o e-mail não tiver cadastro no item-2. (Um por vez)',
+    schema: {
+      default: [
+        {
+          message: 'Você deve fornecer email e password',
+        },
+        {
+          message: 'E-mail informado incorreto, verifique e tente novamente',
+          email: 'email@fornecido.com',
+        },
+      ],
+    },
+    status: 400,
+  })
+  @ApiResponse({
+    description:
+      'Erro ao buscar e-mail no banco no item-1, ou se não gerar os dados de acesso no item-2. (Um por vez)',
+    schema: {
+      default: [
+        {
+          message: 'Um erro ocorreu o buscar registro',
+        },
+        {
+          message: 'Erro grave ao gerar token de acesso',
+        },
+      ],
+    },
+    status: 500,
+  })
   @Public()
   @Post('log-in')
   async entrar(@Body() userEntrarDTO: UserEntrarDTO, @Res() res: Response) {
@@ -126,8 +197,6 @@ export class AuthController {
     if (verEmail instanceof Error)
       return this.serverResponses.internalServerError(res, {
         message: verEmail.message,
-        errorStack: verEmail.stack,
-        status: 500,
       });
     if (!verEmail)
       return this.serverResponses.badRequest(res, {

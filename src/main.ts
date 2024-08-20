@@ -3,6 +3,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 const SWAGGER_DOCS_PATH = process.env.SWAGGER_DOCS_PATH || 'v1/api/docs';
+const SERVER_PORT = process.env.SERVER_PORT || 3000;
+const DOCS_VERSION = process.env.DOCS_VERSION || '1.1';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,15 +16,20 @@ async function bootstrap() {
     \n<i><b>Mais detalhes sobre o funcionamento você encontra na <a alt='docs' href='https://github.com/bear-system-dev/like-delivery-backend?tab=readme-ov-file#' target='_blank'>documentação</a> do repositório</b></i>
     `,
     )
-    .setVersion('v1.0')
+    .setVersion(`v${DOCS_VERSION}`)
     .setLicense(
       `©2023-2024 Bear System | Todos os direitos reservados`,
       `https://bearsystem.onrender.com`,
     )
-    .addTag('Authentication')
+    .setExternalDoc(
+      'REPOSITÓRIO',
+      'https://github.com/bear-system-dev/like-delivery-backend?tab=readme-ov-file#',
+    )
+    .addTag('authentication')
+    .addTag('users')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(SWAGGER_DOCS_PATH, app, document);
-  await app.listen(3000);
+  await app.listen(SERVER_PORT);
 }
 bootstrap();
