@@ -1,13 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import corsOptions from './common/utils/CorsOptions';
+console.log(corsOptions);
 
 const SWAGGER_DOCS_PATH = process.env.SWAGGER_DOCS_PATH || 'v1/api/docs';
 const SERVER_PORT = process.env.SERVER_PORT || 3000;
 const DOCS_VERSION = process.env.DOCS_VERSION || '1.1';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: corsOptions,
+  });
   const config = new DocumentBuilder()
     .setTitle('Documentação Like Delivery - Backend')
     .setDescription(
