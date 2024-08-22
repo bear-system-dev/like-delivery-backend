@@ -8,6 +8,8 @@ export class UserModel implements User {
   fantasyName: string;
   CPF: string;
   CNPJ: string;
+  userRole: 'MERCHANT' | 'CONSUMER';
+  merchantRole: 'OWNER' | 'ADMIN';
   active: boolean;
   phoneNumberFirst: string;
   phoneNumberSecond: string;

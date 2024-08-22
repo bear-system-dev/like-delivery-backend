@@ -7,24 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CONSUMER
+  MERCHANT
+}
+
+enum MerchantRole {
+  OWNER
+  ADMIN
+}
+
 model User {
-  id                String    @id @default(uuid())
-  email             String    @unique
+  id                String       @id @default(uuid())
+  email             String       @unique
   password          String
-  address           Address   @relation(fields: [addressId], references: [id])
+  address           Address      @relation(fields: [addressId], references: [id])
   name              String?
   fantasyName       String?
-  CPF               String?   @unique
-  CNPJ              String?   @unique
-  active            Boolean?  @default(false)
+  CPF               String?      @unique
+  CNPJ              String?      @unique
+  userRole          UserRole     @default(MERCHANT)
+  merchantRole      MerchantRole @default(OWNER)
+  active            Boolean?     @default(false)
   phoneNumberFirst  String
   phoneNumberSecond String?
   phoneNumberThird  String?
   clients           Client[]
   products          Product[]
   orders            Order[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
   addressId         String
 
   @@index([email, fantasyName, CPF, CNPJ])
@@ -37,6 +49,7 @@ model Address {
   number       String
   neighborhood String
   city         String
+  state        String
   country      String
   complement   String?
   User         User[]

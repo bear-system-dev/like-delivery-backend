@@ -57,6 +57,7 @@ export class AuthController {
       number: '',
       street: '',
       complement: '',
+      state: '',
     };
     if (!createUserDto.CNPJ && !createUserDto.CPF)
       errors.push('Você deve enviar o cpf ou cnpj do Usuário');

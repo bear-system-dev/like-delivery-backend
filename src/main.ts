@@ -3,7 +3,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import corsOptions from './common/utils/CorsOptions';
-console.log(corsOptions);
 
 const SWAGGER_DOCS_PATH = process.env.SWAGGER_DOCS_PATH || 'v1/api/docs';
 const SERVER_PORT = process.env.SERVER_PORT || 3000;

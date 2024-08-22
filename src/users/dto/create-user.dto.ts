@@ -26,6 +26,20 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   CNPJ?: string;
 
+  @ApiProperty({
+    required: false,
+    enum: ['MERCHANT', 'CONSUMER'],
+    default: 'MERCHANT',
+  })
+  userRole?: 'MERCHANT' | 'CONSUMER';
+
+  @ApiProperty({
+    required: false,
+    enum: ['OWNER', 'ADMIN'],
+    default: 'OWNER',
+  })
+  merchantRole?: 'OWNER' | 'ADMIN';
+
   @ApiProperty({ required: true })
   active?: boolean;
 

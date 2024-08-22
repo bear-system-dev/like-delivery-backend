@@ -18,7 +18,7 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
   private readonly logger = new Logger(UsersService.name);
   async create(createUserDto: CreateUserDto): Promise<Error | User> {
-    const { city, complement, country, neighborhood, number, street } =
+    const { city, complement, country, neighborhood, number, street, state } =
       createUserDto.address;
     try {
       const newUser = await this.prismaService.user.create({
@@ -32,6 +32,7 @@ export class UsersService {
               neighborhood,
               number,
               street,
+              state,
             },
           },
         },
@@ -237,7 +238,7 @@ export class UsersService {
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     updateUserDto: UpdateUserDto,
   ): Promise<Error | User> {
-    const { city, complement, country, neighborhood, number, street } =
+    const { city, complement, country, neighborhood, number, street, state } =
       updateUserDto.address;
     try {
       const updateUser = await this.prismaService.user.update({
@@ -252,6 +253,7 @@ export class UsersService {
               neighborhood,
               number,
               street,
+              state,
             },
           },
         },
