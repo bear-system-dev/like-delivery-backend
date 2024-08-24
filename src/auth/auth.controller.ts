@@ -101,6 +101,44 @@ export class AuthController {
       }
     }
 
+    const dataAlreadyExists = await Promise.all([
+      this.usersService.findUnique({
+        email: createUserDto.email, // email 0
+      }),
+      createUserDto.CPF
+        ? this.usersService.findUnique({
+            CPF: createUserDto.CPF, // CPF 1
+          })
+        : undefined,
+      createUserDto.CNPJ
+        ? this.usersService.findUnique({
+            CNPJ: createUserDto.CNPJ, //CNPJ 2
+          })
+        : undefined,
+    ]);
+
+    console.log('Email: ', dataAlreadyExists[0]?.name);
+    console.log('CPF: ', dataAlreadyExists[1]?.name);
+    console.log('CNPJ: ', dataAlreadyExists[2]?.name);
+
+    console.log(dataAlreadyExists);
+
+    for (let i = 0; i < dataAlreadyExists.length; i++) {
+      if (dataAlreadyExists[i]?.name === null) {
+        switch (i) {
+          case 0:
+            errors.push(`E-MAIL: Cadastro já existe`);
+            break;
+          case 1:
+            errors.push(`CPF: Cadastro já existe`);
+            break;
+          case 2:
+            errors.push(`CNPJ: Cadastro já existe`);
+            break;
+        }
+      }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const originalPassword = createUserDto.password;
     const hashedPassword = await this.bearHashing.hashData(
