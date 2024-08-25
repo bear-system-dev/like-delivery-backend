@@ -117,14 +117,8 @@ export class AuthController {
         : undefined,
     ]);
 
-    console.log('Email: ', dataAlreadyExists[0]?.name);
-    console.log('CPF: ', dataAlreadyExists[1]?.name);
-    console.log('CNPJ: ', dataAlreadyExists[2]?.name);
-
-    console.log(dataAlreadyExists);
-
     for (let i = 0; i < dataAlreadyExists.length; i++) {
-      if (dataAlreadyExists[i]?.name === null) {
+      if (dataAlreadyExists[i]?.name !== (null || undefined)) {
         switch (i) {
           case 0:
             errors.push(`E-MAIL: Cadastro já existe`);
