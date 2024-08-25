@@ -9,6 +9,7 @@ import { Public } from 'src/decorators/public-endpoint.decorator';
 import { UserAddressDTO } from 'src/users/dto/user-address.dto';
 import { UserEntrarDTO } from './dto/user-login.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -172,7 +173,11 @@ export class AuthController {
     schema: {
       default: {
         message: 'Usuário entrou com sucesso',
-        access_data: {},
+        access_data: {
+          userId: randomUUID(),
+          userName: 'Fulano',
+          access_token: 'JSON WEB TOKEN',
+        },
       },
     },
     status: 200,
